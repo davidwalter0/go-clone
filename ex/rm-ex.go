@@ -1,28 +1,3 @@
----
-### golang deep copy
-
-Recursively parse and duplicate structures, maps, slices and
-combinations of those for objects composed of the default types.
-
-ignores channels
-
-- is there a sane meaning to duplicating an object with channels?
-- possible extension to include creating channels with duplicate depth
-  and direction is being considered
-
----
-
-*Example*
-
-```
-go get github.com/davidwalter0/go-deepcopy
-
-go test github.com/davidwalter0/go-deepcopy
-```
-
-example usage
-
-```
 package main
 
 import (
@@ -69,16 +44,3 @@ func main() {
 	fmt.Printf("Input\n%v %T %p\nOutput\n%v %T %p\n", src.In, src.In, &src.In, dst.In, dst.In, &dst.In)
 	fmt.Printf("Input\n%v %T %p\nOutput\n%v %T %p\n", src, src, &src, dst, dst, &dst)
 }
-
-```
-
-
----
-
-*Bugs*
-
-Lots still working on simplifying recursion and pointer vs interface
-of pointer selection methods
-
-Unset pointers within objects copy don't copy correctly
- 
