@@ -1,14 +1,9 @@
 package main
 
 import (
-	// "encoding/json"
-	// "errors"
 	"github.com/davidwalter0/go-deepcopy"
 
 	"fmt"
-	// "log"
-	// "os"
-	// "reflect"
 )
 
 // Z test struct
@@ -39,16 +34,11 @@ var Copy = deepcopy.Copy
 
 func main() {
 	var i = 1
-	// var mz1 MZ = MZ{"one": Z{1, 2}, "two": Z{3, 4}}
-	// var mz2 MZ = MZ{"three": Z{5, 6}, "four": Z{7, 8}}
-	// var inner Inner = Inner{SSM: []MZ{mz1, mz2}}
 	var pi = 3
 	m := map[int]string{1: "one", 2: "two"}
 	slice := []int{0, 1, 2, 3}
 	StSl := []Z{Z{I: 1, Y: 3.1415926}, Z{I: 2, Y: 2.71828}}
 	var s S = S{P: &pi, I: 1, Y: 3.1415, Zvar: Z{I: 2, Y: 2.71828}, M: m, S: slice, StSl: StSl}
-	// var s S = S{I: 1, Y: 3.1415, Zvar: Z{I: 2, Y: 2.71828}, M: m, S: slice, StSl: StSl, In: inner}
-	// var s S = S{1, 3.1415, Z{2, 2.71828}}
 	var y int = Copy(i).(int)
 	fmt.Printf("%v %T %p %v %T %p\n", &i, i, &i, &y, y, &y)
 	var z = Copy(&s).(S)
@@ -69,10 +59,6 @@ func main() {
 	var mz1 MZ = MZ{"one": Z{1, 2}, "two": Z{3, 4}}
 	var mz2 MZ = MZ{"three": Z{5, 6}, "four": Z{7, 8}}
 	var inner Inner = Inner{SSM: []MZ{mz1, mz2}}
-
-	// m := map[int]string{1: "one", 2: "two"}
-	// slice := []int{0, 1, 2, 3}
-	// StSl := []Z{Z{I: 1, Y: 3.1415926}, Z{I: 2, Y: 2.71828}}
 	var qin S = S{I: 1, Y: 3.1415, Zvar: Z{I: 2, Y: 2.71828}, M: m, S: slice, StSl: StSl, In: inner}
 
 	var qout = Copy(&qin).(S)
