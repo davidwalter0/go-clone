@@ -16,3 +16,6 @@ ignores channels
 
 Lots still working on simplifying recursion and pointer vs interface
 of pointer selection methods
+
+Unset pointers within objects copy don't copy correctly
+ 

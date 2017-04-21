@@ -1,23 +1,24 @@
-package main
+package deepcopy
 
 import (
 	// "encoding/json"
-	"errors"
+	// "errors"
 	"fmt"
-	"log"
-	"os"
+	// "log"
+	// "os"
 	"reflect"
 )
 
-func init() {
-	if false {
-		fmt.Println()
-		log.Println()
-		os.Exit(0)
-	}
-}
+// func init() {
+// 	if false {
+// 		fmt.Println()
+// 		log.Println()
+// 		os.Exit(0)
+// 	}
+// }
+var debug = false
 
-var ErrInvalidArgPointerRequired = errors.New("Argument must be a pointer")
+// var ErrInvalidArgPointerRequired = errors.New("Argument must be a pointer")
 
 // Copy deep recursive copy of object
 func Copy(from interface{}) (to interface{}) {
@@ -41,15 +42,18 @@ func RecursiveDeepCopy(from interface{}) (toVal reflect.Value) {
 	}
 
 	fromVal := reflect.ValueOf(from)
-	fmt.Printf("fromVal  : %v %T %v %v\n", fromVal, fromVal, fromVal, fromVal.Kind())
+	if debug {
+		fmt.Printf("fromVal  : %v %T %v %v\n", fromVal, fromVal, fromVal, fromVal.Kind())
+	}
 	if fromVal.Kind() == reflect.Ptr {
 		if fromVal.IsNil() {
 			fromVal = reflect.New(T)
 		}
 		fromVal = fromVal.Elem()
 	}
-	fmt.Printf("fromVal  : %v %T %v %v\n", fromVal, fromVal, fromVal, fromVal.Kind())
-
+	if debug {
+		fmt.Printf("fromVal  : %v %T %v %v\n", fromVal, fromVal, fromVal, fromVal.Kind())
+	}
 	switch toVal.Kind() {
 	case reflect.String:
 		toVal.SetString(fromVal.String())
@@ -92,11 +96,16 @@ func RecursiveDeepCopy(from interface{}) (toVal reflect.Value) {
 		element := fromVal
 		elementType := element.Type()
 		for i := 0; i < elementType.NumField(); i++ {
-			fmt.Printf("** %v %T %v\n", element.Field(i), element.Field(i), element.Field(i).Kind())
+			if debug {
+				fmt.Printf("** %v %T %v\n",
+					element.Field(i), element.Field(i), element.Field(i).Kind())
+			}
 			field := Pointerize(element.Field(i))
 			set := toVal.Field(i)
-			fmt.Printf("field: %v %T %v\n", field, field, field)
-			fmt.Printf("set  : %v %T %v %v\n", set, set, set, set.Kind())
+			if debug {
+				fmt.Printf("field: %v %T %v\n", field, field, field)
+				fmt.Printf("set  : %v %T %v %v\n", set, set, set, set.Kind())
+			}
 			if set.IsValid() {
 				if set.Kind() == reflect.Ptr && set.IsNil() && set.CanSet() {
 					// toVal.Field(i).Set(RecursiveDeepCopy(field))
@@ -115,7 +124,9 @@ func RecursiveDeepCopy(from interface{}) (toVal reflect.Value) {
 
 // Pointerize return proper interface type
 func Pointerize(in reflect.Value) (arg interface{}) {
-	fmt.Printf("** %v %T %v\n", in, in, in)
+	if debug {
+		fmt.Printf("** %v %T %v\n", in, in, in)
+	}
 	switch in.Type().Kind() {
 	case reflect.Ptr:
 		// arg = in.Elem().Interface()
@@ -135,77 +146,10 @@ func Pointerize(in reflect.Value) (arg interface{}) {
 	default:
 		arg = in.Addr().Interface()
 	}
-	fmt.Printf("** %v %T %v\n", arg, arg, arg)
-	fmt.Printf("** %v %T %v\n", in, in, in)
+	if debug {
+		fmt.Printf("** %v %T %v\n", arg, arg, arg)
+		fmt.Printf("** %v %T %v\n", in, in, in)
+	}
 	return
-}
 
-// Z test struct
-type Z struct {
-	I int
-	Y float64
-}
-
-type MZ map[string]Z
-
-type Inner struct {
-	SSM []MZ
-}
-
-// S test struct
-type S struct {
-	P           *int
-	I           int
-	Y           float64
-	Zvar        Z
-	M           map[int]string
-	S           []int
-	StructSlice []Z
-	In          Inner
-}
-
-func main() {
-	var i = 1
-	// var mz1 MZ = MZ{"one": Z{1, 2}, "two": Z{3, 4}}
-	// var mz2 MZ = MZ{"three": Z{5, 6}, "four": Z{7, 8}}
-	// var inner Inner = Inner{SSM: []MZ{mz1, mz2}}
-	var pi = 3
-	m := map[int]string{1: "one", 2: "two"}
-	slice := []int{0, 1, 2, 3}
-	StructSlice := []Z{Z{I: 1, Y: 3.1415926}, Z{I: 2, Y: 2.71828}}
-	var s S = S{P: &pi, I: 1, Y: 3.1415, Zvar: Z{I: 2, Y: 2.71828}, M: m, S: slice, StructSlice: StructSlice}
-	// var s S = S{I: 1, Y: 3.1415, Zvar: Z{I: 2, Y: 2.71828}, M: m, S: slice, StructSlice: StructSlice, In: inner}
-	// var s S = S{1, 3.1415, Z{2, 2.71828}}
-	var y int = Copy(i).(int)
-	fmt.Printf("%v %T %p %v %T %p\n", &i, i, &i, &y, y, &y)
-	var z = Copy(&s).(S)
-	fmt.Printf("%v %T %p %v %T %p\n", &s, s, &s, &z, z, &z)
-	fmt.Printf("%v %T %p %v %T %p\n", s.I, s.I, &s.I, z.I, z.I, &z.I)
-	fmt.Printf("%v %T %p %v %T %p\n", s.Y, s.Y, &s.Y, z.Y, z.Y, &z.Y)
-	fmt.Printf("%v %T %p %v %T %p\n", s.Zvar.I, s.Zvar.I, &s.Zvar.I,
-		z.Zvar.I, z.Zvar.I, &z.Zvar.I)
-	fmt.Printf("%v %T %p %v %T %p\n", s.Zvar.Y, s.Zvar.Y, &s.Zvar.Y,
-		z.Zvar.Y, z.Zvar.Y, &z.Zvar.Y)
-	fmt.Printf("%v %T %p %v %T %p\n", s.M, s.M, &s.M,
-		z.M, z.M, &z.M)
-	fmt.Printf("%v %T %p %v %T %p\n", s.S, s.S, &s.S,
-		z.S, z.S, &z.S)
-	fmt.Printf("%v %T %p %v %T %p\n", s.StructSlice, s.StructSlice, &s.StructSlice,
-		z.StructSlice, z.StructSlice, &z.StructSlice)
-
-	var mz1 MZ = MZ{"one": Z{1, 2}, "two": Z{3, 4}}
-	var mz2 MZ = MZ{"three": Z{5, 6}, "four": Z{7, 8}}
-	var inner Inner = Inner{SSM: []MZ{mz1, mz2}}
-
-	// m := map[int]string{1: "one", 2: "two"}
-	// slice := []int{0, 1, 2, 3}
-	// StructSlice := []Z{Z{I: 1, Y: 3.1415926}, Z{I: 2, Y: 2.71828}}
-	var qin S = S{I: 1, Y: 3.1415, Zvar: Z{I: 2, Y: 2.71828}, M: m, S: slice, StructSlice: StructSlice, In: inner}
-
-	var qout = Copy(&qin).(S)
-	fmt.Printf("%v %T %p %v %T %p\n", qin.StructSlice, qin.StructSlice, &qin.StructSlice, qout.StructSlice, qout.StructSlice, &qout.StructSlice)
-	fmt.Printf("Input\n%v %T %p\nOutput\n%v %T %p\n", qin.In, qin.In, &qin.In, qout.In, qout.In, &qout.In)
-	fmt.Printf("Input\n%v %T %p\nOutput\n%v %T %p\n", qin, qin, &qin, qout, qout, &qout)
-	fmt.Printf("Input\n%v %T %p\nOutput\n%v %T %p\n", qin.P, qin.P, &qin.P, qout.P, qout.P, &qout.P)
-	fmt.Printf("Input\n%v %T %p\nOutput\n%v %T %p\n", qin.P, qin.P, qin.P, *qout.P, *qout.P, qout.P)
 }
