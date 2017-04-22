@@ -1,5 +1,5 @@
 ---
-### golang deep copy
+### golang clone
 
 Recursively parse and duplicate structures, maps, slices and
 combinations of those for objects composed of the default types.
@@ -15,9 +15,9 @@ ignores channels
 *Example*
 
 ```
-go get github.com/davidwalter0/go-deepcopy
+go get github.com/davidwalter0/go-clone
 
-go test github.com/davidwalter0/go-deepcopy
+go test github.com/davidwalter0/go-clone
 ```
 
 example usage
@@ -26,7 +26,7 @@ example usage
 package main
 
 import (
-	"github.com/davidwalter0/go-deepcopy"
+	"github.com/davidwalter0/go-clone"
 
 	"fmt"
 )
@@ -53,7 +53,7 @@ type S struct {
 	In   Inner
 }
 
-var Copy = deepcopy.Copy
+var Copy = clone.Copy
 
 func main() {
 	m := map[int]string{1: "one", 2: "two"}

@@ -1,32 +1,19 @@
-package deepcopy
+package clone
 
 import (
-	// "encoding/json"
-	// "errors"
 	"fmt"
-	// "log"
-	// "os"
 	"reflect"
 )
 
-// func init() {
-// 	if false {
-// 		fmt.Println()
-// 		log.Println()
-// 		os.Exit(0)
-// 	}
-// }
 var debug = false
-
-// var ErrInvalidArgPointerRequired = errors.New("Argument must be a pointer")
 
 // Copy deep recursive copy of object
 func Copy(from interface{}) (to interface{}) {
-	return RecursiveDeepCopy(from).Interface()
+	return RecursiveClone(from).Interface()
 }
 
-// RecursiveDeepCopy from return to duplicate copy of any arbitrary object
-func RecursiveDeepCopy(from interface{}) (toVal reflect.Value) {
+// RecursiveClone from return to duplicate copy of any arbitrary object
+func RecursiveClone(from interface{}) (toVal reflect.Value) {
 	if from == nil {
 		return toVal
 	}
@@ -70,7 +57,7 @@ func RecursiveDeepCopy(from interface{}) (toVal reflect.Value) {
 		var arg interface{}
 		for i := 0; i < fromVal.Len(); i++ {
 			arg = Pointerize(fromVal.Index(i))
-			toVal = reflect.Append(toVal, RecursiveDeepCopy(arg))
+			toVal = reflect.Append(toVal, RecursiveClone(arg))
 		}
 	case reflect.Map:
 		toVal = reflect.MakeMap(fromVal.Type())
@@ -79,17 +66,11 @@ func RecursiveDeepCopy(from interface{}) (toVal reflect.Value) {
 		for _, key := range fromVal.MapKeys() {
 			keyTo := reflect.New(keyType).Elem()
 			valTo := reflect.New(valType).Elem()
-			keyTo.Set(RecursiveDeepCopy(Pointerize(key)))
+			keyTo.Set(RecursiveClone(Pointerize(key)))
 			tmp := fromVal.MapIndex(key)
-			// fmt.Printf("Debugging %v %T %v %T %v\n",
-			// 	keyTo.Interface(), keyTo.Interface(), tmp, tmp, tmp.Kind())
 			value := Pointerize(tmp)
-			// fmt.Printf("Debugging %v %T %v %T\n",
-			// 	keyTo.Interface(), keyTo.Interface(), value, value)
-			valTo.Set(RecursiveDeepCopy(value))
-			// fmt.Printf("** %v %T %v %T\n", keyTo.Interface(), keyTo.Interface(), valTo.Interface(), valTo.Interface())
+			valTo.Set(RecursiveClone(value))
 			toVal.SetMapIndex(keyTo, valTo)
-			// fmt.Printf("Map: value %v type: %T\n", toVal.Interface(), toVal.Interface())
 		}
 
 	case reflect.Struct:
@@ -108,17 +89,14 @@ func RecursiveDeepCopy(from interface{}) (toVal reflect.Value) {
 			}
 			if set.IsValid() {
 				if set.Kind() == reflect.Ptr && set.IsNil() && set.CanSet() {
-					// toVal.Field(i).Set(RecursiveDeepCopy(field))
-					v := RecursiveDeepCopy(field)
+					v := RecursiveClone(field)
 					set.Set(reflect.ValueOf(v.Addr().Interface()))
 				} else {
-					// toVal.Field(i).Set(RecursiveDeepCopy(field))
-					set.Set(RecursiveDeepCopy(field))
+					set.Set(RecursiveClone(field))
 				}
 			}
 		}
 	}
-	// fmt.Printf("<< %v %T\n", toVal, toVal)
 	return toVal
 }
 

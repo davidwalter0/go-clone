@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/davidwalter0/go-deepcopy"
+	"github.com/davidwalter0/go-clone"
 
 	"fmt"
 )
@@ -28,7 +28,7 @@ type S struct {
 	In   Inner
 }
 
-var Copy = deepcopy.Copy
+var Copy = clone.Copy
 
 func main() {
 	m := map[int]string{1: "one", 2: "two"}
