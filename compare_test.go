@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func CompareIntSlice(t *testing.T, src, dst []int) {
+func compareIntSlice(t *testing.T, src, dst []int) {
 	if debug {
 		fmt.Println(src, dst)
 	}
@@ -16,7 +16,7 @@ func CompareIntSlice(t *testing.T, src, dst []int) {
 	}
 }
 
-func CompareZSlice(t *testing.T, src, dst []Z) {
+func compareZSlice(t *testing.T, src, dst []Z) {
 	if debug {
 		fmt.Println(src, dst)
 	}
@@ -27,7 +27,7 @@ func CompareZSlice(t *testing.T, src, dst []Z) {
 	}
 }
 
-func CompareBoolSlice(t *testing.T, src, dst []bool) {
+func compareBoolSlice(t *testing.T, src, dst []bool) {
 	if debug {
 		fmt.Println(src, dst)
 	}
@@ -38,7 +38,7 @@ func CompareBoolSlice(t *testing.T, src, dst []bool) {
 	}
 }
 
-func CompareMapStringBool(t *testing.T, src, dst map[string]bool) {
+func compareMapStringBool(t *testing.T, src, dst map[string]bool) {
 	if debug {
 		fmt.Println(src, dst)
 	}
@@ -48,18 +48,7 @@ func CompareMapStringBool(t *testing.T, src, dst map[string]bool) {
 		}
 	}
 }
-func CompareMapIntString(t *testing.T, src, dst map[int]string) {
-	if debug {
-		fmt.Println(src, dst)
-	}
-	for k, v := range src {
-		if v != dst[k] {
-			t.Errorf("Test_Int: %v %v %v", src, dst, v == dst[k])
-		}
-	}
-}
-
-func CompareMapOfZStruct(t *testing.T, src, dst map[string]Z) {
+func compareMapIntString(t *testing.T, src, dst map[int]string) {
 	if debug {
 		fmt.Println(src, dst)
 	}
@@ -70,7 +59,18 @@ func CompareMapOfZStruct(t *testing.T, src, dst map[string]Z) {
 	}
 }
 
-func CompareInt(t *testing.T, src, dst int) {
+func compareMapOfZStruct(t *testing.T, src, dst map[string]Z) {
+	if debug {
+		fmt.Println(src, dst)
+	}
+	for k, v := range src {
+		if v != dst[k] {
+			t.Errorf("Test_Int: %v %v %v", src, dst, v == dst[k])
+		}
+	}
+}
+
+func compareInt(t *testing.T, src, dst int) {
 	if debug {
 		fmt.Println(src, dst)
 	}
@@ -79,7 +79,7 @@ func CompareInt(t *testing.T, src, dst int) {
 	}
 }
 
-func CompareFloat(t *testing.T, src, dst float64) {
+func compareFloat(t *testing.T, src, dst float64) {
 	if debug {
 		fmt.Println(src, dst)
 	}
@@ -88,7 +88,7 @@ func CompareFloat(t *testing.T, src, dst float64) {
 	}
 }
 
-func CompareString(t *testing.T, src, dst string) {
+func compareString(t *testing.T, src, dst string) {
 	if debug {
 		fmt.Println(src, dst)
 	}
@@ -97,7 +97,7 @@ func CompareString(t *testing.T, src, dst string) {
 	}
 }
 
-func CompareBool(t *testing.T, src, dst bool) {
+func compareBool(t *testing.T, src, dst bool) {
 	if debug {
 		fmt.Println(src, dst)
 	}
@@ -106,7 +106,7 @@ func CompareBool(t *testing.T, src, dst bool) {
 	}
 }
 
-func CompareInnerStruct(t *testing.T, src, dst Inner) {
+func compareInnerStruct(t *testing.T, src, dst Inner) {
 	if debug {
 		fmt.Println(src, dst)
 	}
@@ -119,7 +119,7 @@ func CompareInnerStruct(t *testing.T, src, dst Inner) {
 	}
 }
 
-func CompareZ(t *testing.T, src, dst Z) {
+func compareZ(t *testing.T, src, dst Z) {
 	if debug {
 		fmt.Println(src, dst)
 	}
